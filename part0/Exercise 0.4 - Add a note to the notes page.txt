@@ -1,0 +1,37 @@
+title Exercise 0.4 - Add a note to the notes page
+
+note over browser
+  The user submits text using POST.
+end note
+
+browser->server: HTTP POST https://fullstack-exampleapp.herokuapp.com/new_note
+
+note over server
+  The server responds with HTTP status code 302 (URL Redirect),
+  which tells the browser to do an HTTP GET request to the url in
+  the Header's 'Location' value.
+end note
+
+browser->server: HTTP GET https://fullstack-exampleapp.herokuapp.com/notes
+server-->browser: notes.html 
+
+note over browser
+  The browser sees that it should download a css and a js file.
+end note
+
+browser->server: HTTP GET https://fullstack-exampleapp.herokuapp.com/main.css
+server-->browser: main.css
+browser->server: HTTP GET https://fullstack-exampleapp.herokuapp.com/main.js
+server-->browser: main.js
+
+note over browser
+  The browser starts executing the js code
+  which requests JSON data from the server.
+end note
+
+browser->server: HTTP GET https://fullstack-exampleapp.herokuapp.com/data.json
+server-->browser: data.json (JSON data of the list of notes)
+
+note over browser
+  The browser executes the event handler that renders the notes.
+end note
