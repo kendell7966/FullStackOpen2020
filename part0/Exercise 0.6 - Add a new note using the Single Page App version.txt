@@ -1,0 +1,24 @@
+title Exercise 0.6 - Add a new note using the Single Page App version
+
+note over browser
+  The user enters some text and clicks the save button.
+end note
+
+note over browser
+  On the client side, the javascript code:
+  1) Adds the new text to the notes array that is in memory on the client.
+  2) Redraws the notes list so the new text will be displayed.
+  3) Sends the new text to the server using POST.
+end note
+
+browser->server: HTTP POST https://fullstack-exampleapp.herokuapp.com/new_note_spa
+
+note over server
+  The new item is added to the master list.
+end note
+
+server-->browser: Returns status code 201 Created
+
+note over browser
+  The Response text is written to the console.
+end note
