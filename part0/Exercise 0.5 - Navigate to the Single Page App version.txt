@@ -1,0 +1,30 @@
+title Exercise 0.5 - Navigate to the Single Page App version
+
+note over browser
+  The user navigates to the website.
+end note
+
+browser->server: HTTP POST https://fullstack-exampleapp.herokuapp.com/spa
+server-->browser: spa.html 
+
+note over browser
+  The browser sees that it should download
+  a stylesheet and a javascript file.
+end note
+
+browser->server: HTTP GET https://fullstack-exampleapp.herokuapp.com/main.css
+server-->browser: main.css
+browser->server: HTTP GET https://fullstack-exampleapp.herokuapp.com/spa.js
+server-->browser: spa.js
+
+note over browser
+  The browser starts executing the javascript code
+  which requests JSON data from the server.
+end note
+
+browser->server: HTTP GET https://fullstack-exampleapp.herokuapp.com/data.json
+server-->browser: data.json (JSON data of the list of notes)
+
+note over browser
+  The browser executes the event handler that renders the notes.
+end note
