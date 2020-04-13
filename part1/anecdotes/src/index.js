@@ -5,30 +5,46 @@ const randomIntFromInterval = (min, max) => {
     return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
-const Button = (props) => {
+const Button = ({handleClick, text}) => {
     return (
-        <button onClick={props.handleClick}>
-            {props.text}
+        <button onClick={handleClick}>
+            {text}
         </button>
     )
 }
 
-const App = (props) => {
+const Anecdote = ({anecdote, vote}) => {
+    return (
+        <div>
+            {anecdote}
+            <br />
+            has {vote} vote(s)
+        </div>
+    )
+}
+
+const App = ({anecdotes}) => {
     const getRandomIndex = () => {
         return randomIntFromInterval(0, anecdotes.length - 1)
     }
 
     const [selected, setSelected] = useState(getRandomIndex())
+    const [votes, setVotes] = useState(new Uint32Array(anecdotes.length))
 
-    const handleClick = () => {
+    const handleNextAnecdoteClick = () => {
         setSelected(getRandomIndex())
+    }
+
+    const handleVoteClick = () => {
+        const newVotes = votes.map((vote, index) => index===selected ? vote + 1 : vote )
+        setVotes(newVotes)
     }
 
     return (
         <div>
-            {props.anecdotes[selected]}
-            <br />
-            <Button handleClick={handleClick} text="next anecdote" />
+            <Anecdote anecdote={anecdotes[selected]} vote={votes[selected]} />
+            <Button handleClick={handleVoteClick} text="vote" />
+            <Button handleClick={handleNextAnecdoteClick} text="next anecdote" />
         </div>
     )
 }
