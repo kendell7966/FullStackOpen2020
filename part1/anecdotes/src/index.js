@@ -5,7 +5,20 @@ const randomIntFromInterval = (min, max) => {
     return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
-const Button = ({handleClick, text}) => {
+const getIndexForMostVotes = (votes) => {
+    let max = 0;
+    let index = -1
+    for (let i = 0; i < votes.length; i++) {
+        if (votes[i] > max) {
+            max = votes[i]
+            index = i
+        }
+    }
+
+    return index
+}
+
+const Button = ({ handleClick, text }) => {
     return (
         <button onClick={handleClick}>
             {text}
@@ -13,17 +26,36 @@ const Button = ({handleClick, text}) => {
     )
 }
 
-const Anecdote = ({anecdote, vote}) => {
+const Anecdote = ({ anecdote, vote }) => {
     return (
         <div>
-            {anecdote}
-            <br />
+            <h1>Anecdote of the day</h1>
+            <p>
+                {anecdote}
+            </p>
             has {vote} vote(s)
         </div>
     )
 }
 
-const App = ({anecdotes}) => {
+const BestAnecdote = ({ anecdotes, votes }) => {
+    let index = getIndexForMostVotes(votes)
+    if (index < 0) {
+        return null
+    }
+
+    return (
+        <div>
+            <h1>Anecdote with most votes</h1>
+            <p>
+                {anecdotes[index]}
+            </p>
+            has {votes[index]} vote(s)
+        </div>
+    )
+}
+
+const App = ({ anecdotes }) => {
     const getRandomIndex = () => {
         return randomIntFromInterval(0, anecdotes.length - 1)
     }
@@ -45,6 +77,7 @@ const App = ({anecdotes}) => {
             <Anecdote anecdote={anecdotes[selected]} vote={votes[selected]} />
             <Button handleClick={handleVoteClick} text="vote" />
             <Button handleClick={handleNextAnecdoteClick} text="next anecdote" />
+            <BestAnecdote anecdotes={anecdotes} votes={votes} />
         </div>
     )
 }
