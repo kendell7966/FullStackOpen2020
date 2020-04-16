@@ -55,13 +55,42 @@ const App = () => {
         setFilter(event.target.value)
     }
 
+    const ensureIdRemoved = id => {
+        setPersons(persons.filter(n => n.id !== id))
+    }
+
+    const handleClickDelete = (id) => {
+        let person = persons.find(person => person.id === id)
+
+        if (person === undefined) {
+            alert(`the person with id '${id}' was already deleted from the server`)
+            ensureIdRemoved(id)
+            return
+        }
+
+        let confirmDelete = window.confirm(`Delete ${person.name}?`)
+        if (confirmDelete === false) {
+            return
+        }
+
+        noteService
+            .remove(id)
+            .then(() => {
+                ensureIdRemoved(id)
+            })
+            .catch(error => {
+                alert(`the person with id '${id}' was already deleted from the server`)
+                ensureIdRemoved(id)
+            })
+    }
+
     return (
         <div>
             <h2>Phonebook</h2>
             <PersonFilter filter={filter} handleFilterChange={handleFilterChange} />
             <PersonForm newName={newName} handleNameChange={handleNameChange} newNumber={newNumber} handleNumberChange={handleNumberChange} addName={addName} />
             <h3>Numbers</h3>
-            <Persons persons={persons} filter={filter} />
+            <Persons persons={persons} filter={filter} handleClickDelete={handleClickDelete} />
         </div>
     )
 }
