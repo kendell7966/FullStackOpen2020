@@ -19,12 +19,29 @@ const App = () => {
             })
     }, [])
 
+    const updatePerson = (person) => {
+
+        const personObject = { ...person, number: newNumber }
+
+        noteService
+            .update(personObject.id, personObject)
+            .then(personObject => {
+                setPersons(persons.map(person => person.id !== personObject.id ? person : personObject))
+            })
+
+        setNewName('')
+        setNewNumber('')
+    }
+
     const addName = (event) => {
         event.preventDefault()
 
-        let existingIndex = persons.find(person => person.name === newName);
-        if (existingIndex !== undefined) {
-            alert(`${newName} is already added to phonebook`)
+        let existingPerson = persons.find(person => person.name === newName);
+        if (existingPerson !== undefined) {
+            let shouldUpdate = window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)
+            if (shouldUpdate) {
+                updatePerson(existingPerson)
+            }
             return
         }
 
