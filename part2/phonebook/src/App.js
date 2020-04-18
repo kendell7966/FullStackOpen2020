@@ -11,7 +11,9 @@ const App = () => {
     const [newName, setNewName] = useState('')
     const [newNumber, setNewNumber] = useState('')
     const [filter, setFilter] = useState('')
-    const [notificationMessage, setNotificationMessage] = useState(null)
+
+    const emptyNotificationObject = { message: null, className: null }
+    const [notificationObject, setNotificationObject] = useState(emptyNotificationObject)
 
     useEffect(() => {
         noteService
@@ -21,11 +23,22 @@ const App = () => {
             })
     }, [])
 
-    const Notify = (message) => {
-        setNotificationMessage(message)
+    const notify = (message, className) => {
+
+        const notifyObject = { message, className }
+        setNotificationObject(notifyObject)
+
         setTimeout(() => {
-            setNotificationMessage(null)
+            setNotificationObject(emptyNotificationObject)
         }, 5000)
+    }
+
+    const displaySuccess = message => {
+        notify(message, "notify")
+    }
+
+    const displayError = message => {
+        notify(message, "error")
     }
 
     const updatePerson = (person) => {
@@ -35,8 +48,12 @@ const App = () => {
         noteService
             .update(personObject.id, personObject)
             .then(personObject => {
-                Notify(`Person '${personObject.name}' was updated`)
+                displaySuccess(`Person '${personObject.name}' was updated`)
                 setPersons(persons.map(person => person.id !== personObject.id ? person : personObject))
+            })
+            .catch(error => {
+                displayError(`the person with id '${personObject.id}' was already deleted from the server`)
+                ensureIdRemoved(personObject.id)
             })
 
         setNewName('')
@@ -63,7 +80,7 @@ const App = () => {
         noteService
             .create(personObject)
             .then(personObject => {
-                Notify(`Person '${personObject.name}' was added`)
+                displaySuccess(`Person '${personObject.name}' was added`)
                 setPersons(persons.concat(personObject))
             })
 
@@ -89,9 +106,10 @@ const App = () => {
 
     const handleClickDelete = (id) => {
         let person = persons.find(person => person.id === id)
+        let alreadyDeletedMessage = `the person with id '${id}' was already deleted from the server`
 
         if (person === undefined) {
-            alert(`the person with id '${id}' was already deleted from the server`)
+            displayError(alreadyDeletedMessage)
             ensureIdRemoved(id)
             return
         }
@@ -104,10 +122,11 @@ const App = () => {
         noteService
             .remove(id)
             .then(() => {
+                displaySuccess(`Person '${person.name}' was removed`)
                 ensureIdRemoved(id)
             })
             .catch(error => {
-                alert(`the person with id '${id}' was already deleted from the server`)
+                displayError(alreadyDeletedMessage)
                 ensureIdRemoved(id)
             })
     }
@@ -115,7 +134,7 @@ const App = () => {
     return (
         <div>
             <h2>Phonebook</h2>
-            <Notification message={notificationMessage} />
+            <Notification message={notificationObject.message} className={notificationObject.className} />
             <PersonFilter filter={filter} handleFilterChange={handleFilterChange} />
             <PersonForm newName={newName} handleNameChange={handleNameChange} newNumber={newNumber} handleNumberChange={handleNumberChange} addName={addName} />
             <h3>Numbers</h3>
