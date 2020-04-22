@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import noteService from './services/notes'
+import personService from './services/persons'
 import Persons from './components/Persons'
 import PersonForm from './components/PersonForm'
 import PersonFilter from './components/PersonFilter'
@@ -16,10 +16,10 @@ const App = () => {
     const [notificationObject, setNotificationObject] = useState(emptyNotificationObject)
 
     useEffect(() => {
-        noteService
+        personService
             .getAll()
-            .then(initialNotes => {
-                setPersons(initialNotes)
+            .then(initialPersons => {
+                setPersons(initialPersons)
             })
     }, [])
 
@@ -45,7 +45,7 @@ const App = () => {
 
         const personObject = { ...person, number: newNumber }
 
-        noteService
+        personService
             .update(personObject.id, personObject)
             .then(personObject => {
                 displaySuccess(`Person '${personObject.name}' was updated`)
@@ -77,7 +77,7 @@ const App = () => {
             number: newNumber
         }
 
-        noteService
+        personService
             .create(personObject)
             .then(personObject => {
                 displaySuccess(`Person '${personObject.name}' was added`)
@@ -119,7 +119,7 @@ const App = () => {
             return
         }
 
-        noteService
+        personService
             .remove(id)
             .then(() => {
                 displaySuccess(`Person '${person.name}' was removed`)
