@@ -63,7 +63,7 @@ const App = () => {
     const addName = (event) => {
         event.preventDefault()
 
-        let existingPerson = persons.find(person => person.name === newName);
+        const existingPerson = persons.find(person => person.name === newName);
         if (existingPerson !== undefined) {
             let shouldUpdate = window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)
             if (shouldUpdate) {
@@ -82,6 +82,9 @@ const App = () => {
             .then(personObject => {
                 displaySuccess(`Person '${personObject.name}' was added`)
                 setPersons(persons.concat(personObject))
+            })
+            .catch(error => {
+                displayError(error.response.data.error)
             })
 
         setNewName('')

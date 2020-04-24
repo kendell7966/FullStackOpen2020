@@ -35,6 +35,6 @@
   "devDependencies": {
     "json-server": "^0.16.1"
   },
-  "proxy": "http://localhost:3001",
+  "proxy": "http://localhost:3002",
   "proxy1": "https://fast-sea-41401.herokuapp.com/"
 }
