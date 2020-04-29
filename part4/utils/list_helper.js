@@ -39,9 +39,28 @@ const mostBlogs = (blogs) => {
     return result
 }
 
+const mostLikes = (blogs) => {
+    const result = _.chain(blogs)
+        .map('author')                                          // get only author name
+        .groupBy(_.identity)                                    // group by similar names
+        .map(m => {                                             // change to desired object
+            return {
+                author: _.first(m),
+                likes: _(blogs)
+                    .filter(blog => blog.author === _.first(m)) // filter all blogs by author
+                    .sumBy('likes', (blog) => { blog.likes })   // count the likes this author
+            }
+        })
+        .reduce((acc, i) => acc.likes > i.likes ? acc : i)      // find the record with the most blogs
+        .value()                                                // evaluate
+
+    return result
+}
+
 module.exports = {
     dummy,
     totalLikes,
     favoriteBlog,
-    mostBlogs
+    mostBlogs,
+    mostLikes
 }
