@@ -1,3 +1,5 @@
+var _ = require('lodash');
+
 const dummy = (blogs) => {
     return 1
 }
@@ -26,8 +28,20 @@ const favoriteBlog = (blogs) => {
     }
 }
 
+const mostBlogs = (blogs) => {
+    const result = _.chain(blogs)
+        .map('author')                                          // get only author name
+        .groupBy(_.identity)                                    // group by similar names
+        .map(m => ({ author: _.first(m), blogs: m.length }))    // change to desired object
+        .reduce((acc, i) => acc.blogs > i.blogs ? acc : i)      // find the record with the most blogs
+        .value()                                                // evaluate
+
+    return result
+}
+
 module.exports = {
     dummy,
     totalLikes,
-    favoriteBlog
+    favoriteBlog,
+    mostBlogs
 }

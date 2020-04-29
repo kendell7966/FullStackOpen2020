@@ -45,7 +45,7 @@ describe('total likes', () => {
     })
 })
 
-describe('favorite blog ', () => {
+describe('favorite blog', () => {
     test('that has the most likes', () => {
 
         const expected = blogs[2]
@@ -57,5 +57,18 @@ describe('favorite blog ', () => {
 
         const result = listHelper.favoriteBlog(blogs)
         expect(result).toEqual(expectedObject)
+    })
+})
+
+describe('author', () => {
+    test('that has the most blogs', () => {
+
+        const expected = {
+            author: "Robert C. Martin",
+            blogs: 3
+        }
+
+        const result = listHelper.mostBlogs(blogs)
+        expect(result).toEqual(expected)
     })
 })
