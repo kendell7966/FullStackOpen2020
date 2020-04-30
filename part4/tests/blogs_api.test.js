@@ -23,7 +23,7 @@ test('identifier property of the blog posts is named id', async () => {
     const blogs = response.body
 
     blogs.forEach(blog => {
-        expect(blog.id).toBeDefined();
+        expect(blog.id).toBeDefined()
     })
 })
 
@@ -70,8 +70,8 @@ test('when posting a new blog, the likes property should default to 0 if missing
     expect(title).toContain('New Blog Title')
 
     const blog = response.body
-    expect(blog.likes).toBeDefined();
-    expect(blog.likes).toBe(0);
+    expect(blog.likes).toBeDefined()
+    expect(blog.likes).toBe(0)
 })
 
 describe('deletion of a blog', () => {
@@ -92,6 +92,32 @@ describe('deletion of a blog', () => {
         const title = blogsAtEnd.map(r => r.title)
 
         expect(title).not.toContain(blogToDelete.title)
+    })
+})
+
+describe('editing a blog', () => {
+    test('succeeds with status code 200 if id is valid', async () => {
+        const blogs = await helper.blogsInDb()
+        const blogToUpdate = blogs[0]
+
+        const newLikes = 15
+
+        const newBlog = {
+            title: blogToUpdate.title,
+            author: blogToUpdate.author,
+            url: blogToUpdate.url,
+            likes: newLikes
+        }
+
+        const response = await api
+            .put(`/api/blogs/${blogToUpdate.id}`)
+            .send(newBlog)
+            .expect(200)
+            .expect('Content-Type', /application\/json/)
+
+        const blog = response.body
+
+        expect(blog.likes).toBe(newLikes)
     })
 })
 
