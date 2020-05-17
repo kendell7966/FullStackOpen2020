@@ -21,6 +21,15 @@ usersRouter.get('/', async (request, response) => {
 usersRouter.post('/', async (request, response) => {
   const body = request.body
 
+  if(body.password === undefined ) {
+    return response.status(400).json({ error: 'password is missing' })
+  }
+
+  const minPasswordLength = 3;
+  if(body.password.length < minPasswordLength ) {
+    return response.status(400).json({ error: 'password must be at least ${minPasswordLength} characters' })
+  }
+
   const saltRounds = 10
   const passwordHash = await bcrypt.hash(body.password, saltRounds)
 
