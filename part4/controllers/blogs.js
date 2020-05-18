@@ -40,6 +40,14 @@ blogsRouter.post('/', async (request, response) => {
 })
 
 blogsRouter.delete('/:id', async (request, response) => {
+    const blog = await Blog.findById(request.params.id)
+    const decodedToken = jwt.verify(request.token, process.env.SECRET)
+    const user = await User.findById(decodedToken.id)
+    if(user.id.toString() !== blog.user.toString()) {
+        response.status(401).json({ error: 'can only be deleted by the creator' })
+        return
+    }
+
     await Blog.findByIdAndRemove(request.params.id)
     response.status(204).end()
 })
@@ -49,6 +57,7 @@ blogsRouter.put('/:id', async (request, response) => {
 
     if (title === undefined || author === undefined || url === undefined) {
         response.status(400).end()
+        return
     }
 
     const blog = {
